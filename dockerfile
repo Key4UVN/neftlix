@@ -1,15 +1,18 @@
-FROM node:18-alpine
+FROM arm64v8/node:18-alpine
 
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN apk add --no-cache git \
-    && npm install --frozen-lockfile \
-    && npm cache clean --force  
+    && npm ci \
+    && npm cache clean --force
 
 COPY . .
 RUN npm run build
 
+ENV NODE_ENV=production
+ENV PORT=3000
+
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["npm", "run", "start"]
